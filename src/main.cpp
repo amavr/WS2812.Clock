@@ -40,6 +40,9 @@ uint8_t HUE_M = 96;
 uint8_t VAL_MIN = 30;
 uint8_t VAL_MAX = 150;
 
+uint8_t VAL_MIN_H = 130;
+uint8_t VAL_MAX_H = 200;
+
 #define BTN_PIN D1
 
 bool volatile isMusicMode = false;
@@ -107,28 +110,47 @@ void setup()
     pinMode(LED_PIN, OUTPUT);
 }
 
+volatile uint8_t val_h = VAL_MAX;
+bool dir_h = true;
+
 void showTime(int hh, int mm, int ss)
 {
+    val_h = val_h + (dir_h ? 5 : -5);
+    if (val_h > VAL_MAX_H)
+    {
+        dir_h = !dir_h;
+        val_h = VAL_MAX_H;
+    }
+    if (val_h < VAL_MIN_H)
+    {
+        dir_h = !dir_h;
+        val_h = VAL_MIN_H;
+    }
+
     if (hh >= 12)
+    {
         hh -= 12;
-
-    int dh = mm / 12;
-    // деление между 2-мя пикселами по яркости
-    int ofs = mm % 12;
-    int val1 = VAL_MAX * (12 - ofs) / 12;
-    int val2 = VAL_MAX - val1;
-
-    // show current hour
-    if (val1 > 20)
-    {
-        leds[hh * 5 + dh] = CHSV(HUE_H, SAT_C, val1);
     }
-    if (val2 > 20)
-    {
-        leds[hh * 5 + dh + 1] = CHSV(HUE_H, SAT_C, val2);
-    }
+
+    // int dh = mm / 12;
+    // // деление между 2-мя пикселами по яркости
+    // int ofs = mm % 12;
+    // int val1 = VAL_MAX * (12 - ofs) / 12;
+    // int val2 = VAL_MAX - val1;
+
+    // // show current hour
+    // if (val1 > 20)
+    // {
+    //     leds[hh * 5 + dh] = CHSV(HUE_H, SAT_C, val1);
+    // }
+    // if (val2 > 20)
+    // {
+    //     leds[hh * 5 + dh + 1] = CHSV(HUE_H, SAT_C, val2);
+    // }
     // show current minute
     leds[mm] = CHSV(HUE_M, SAT_C, VAL_MAX);
+    // show current hour
+    leds[hh * 5] = CHSV(HUE_H, SAT_C, val_h);
     // show current second
     leds[ss] = CRGB(250, 250, 250);
 }
