@@ -132,7 +132,7 @@ void showTime(int hh, int mm, int ss)
         hh -= 12;
     }
 
-    // int dh = mm / 12;
+    int dh = mm / 12;
     // // деление между 2-мя пикселами по яркости
     // int ofs = mm % 12;
     // int val1 = VAL_MAX * (12 - ofs) / 12;
@@ -150,7 +150,7 @@ void showTime(int hh, int mm, int ss)
     // show current minute
     leds[mm] = CHSV(HUE_M, SAT_C, VAL_MAX);
     // show current hour
-    leds[hh * 5] = CHSV(HUE_H, SAT_C, val_h);
+    leds[hh * 5 + dh] = CHSV(HUE_H, SAT_C, val_h);
     // show current second
     leds[ss] = CRGB(250, 250, 250);
 }
